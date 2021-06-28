@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang = "en">
+  <style>
+    #wrap .scrollBox, #wrap .list{
+      float: left;
+    }
+    .scrollBox {
+      width: 40%;
+      height: 500px;
+      margin-right: 5%;
+      border: 1px solid red;
+      overflow: scroll;
+    }
+    .list {
+      width: 40%;
+      border: 1px solid red;
+    }
+  </style>
+  <body>
+    <div id = "wrap">
+      <div class = "scrollBox"><!-- 内容动态生成 --></div>
+      <ul class = "list">
+        <li>我是列表</li>
+      </ul>
+    </div>
+  </body>
+  <script src="../js/debounce&throttle.js"></script>
+  <script type="module">
+    // 防抖函数，不如不理解为什么能防抖，请看下面的解释内容
+    // function debounce (handle, delay) {
+    //     console.log('debounce')
+    //   let timer = null
+    //   return function () {
+    //     if (timer) {
+    //       // console.log('clearTimeout, clear timer')
+    //       clearTimeout(timer)
+    //     }
+    //     // console.log('setTimeout, set timer')    
+    //     timer = setTimeout(handle, delay)
+    //   }
+    // }
+    // 事件处理函数，生成一个li节点，并添加到ul节点的末尾
+    function handle () {
+      const node = document.createElement('li')
+      const text = document.createTextNode(Date.now())
+      node.appendChild(text)
+      document.getElementsByClassName('list')[0].appendChild(node)
+    }
+    // 添加事件监听器，形成了一个闭包
+    
+    document.getElementsByClassName('scrollBox')[0].addEventListener('scroll', throttle(handle, 1000))
+    // document.getElementsByClassName('scrollBox')[0].addEventListener('scroll', debounce(handle, 500))
+    // document.getElementsByClassName('scrollBox')[0].addEventListener('click', ()=>{console.log('click scroll-box')})
+    
+    // 生成滚动栏的内容，以下部分和上面的html、css只为构造一个实验环境
+    let content = ''
+    for (let i = 0; i < 1000; i++) {
+      content += '在我上面滚动鼠标'
+    }
+    const textNode = document.createTextNode(content)
+    document.getElementsByClassName('scrollBox')[0].appendChild(textNode)
+  </script>
+</html>
