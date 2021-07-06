@@ -24,24 +24,22 @@ export default function parse(template) {
         // 说明是闭合标签
         parseEnd()
       } else {
-        // 开始处理标签
+        // 处理开始标签
         parseStartTag()
       }
     } else if (startIdx > 0) {
       // 说明在开始标签之间有一段文本内容，在 html 中找到下一个标签的开始位置
       const nextStartIdx = html.indexOf('<')
-
+      // 如果栈为空，则说明这段文本不属于任何一个元素，直接丢掉，不做处理
       if (stack.length) {
-        // 走到这里说明栈不为空，则处理这段文本，并将其放到栈顶元素的肚子里
+        // 走到这里说说明栈不为空，则处理这段文本，并将其放到栈顶元素的肚子里
         processChars(html.slice(0, nextStartIdx))
       }
-      // 如果栈为空，则说明这段文本不属于任何一个元素，直接丢掉，不做处理
       html = html.slice(nextStartIdx)
     } else {
       // 说明没有匹配到开始标签，整个 html 就是一段文本
     }
   }
-
   return root
 
   /**
@@ -114,11 +112,63 @@ export default function parse(template) {
       // 处理 v-on 指令，比如 <button v-on:click="add"> add </button>
       processVOn(curEle, RegExp.$1, rawAttr[`v-on:${RegExp.$1}`])
     }
-
+    // 处理插槽内容
+    processSlotContent(curEle)
     // 节点处理完以后让其和父节点产生关系
     if (stackLen) {
       stack[stackLen - 1].children.push(curEle)
       curEle.parent = stack[stackLen - 1]
+      // 如果节点存在 slotName，则说明该节点是组件传递给插槽的内容
+      // 将插槽信息放到组件节点的 rawAttr.scopedSlots 对象上
+      // 而这些信息在生成组件插槽的 VNode 时（renderSlot）会用到
+      if (curEle.slotName) {
+        const { parent, slotName, scopeSlot, children } = curEle
+        // 这里关于 children 的操作，只是单纯为了避开 JSON.stringify 的循环引用问题
+        // 因为生成渲染函数时需要对 attr 执行 JSON.stringify 方法
+        const slotInfo = {
+          slotName,
+          scopeSlot,
+          children: children.map((item) => {
+            delete item.parent
+            return item
+          }),
+        }
+        if (parent.rawAttr.scopedSlots) {
+          parent.rawAttr.scopedSlots[curEle.slotName] = slotInfo
+        } else {
+          parent.rawAttr.scopedSlots = { [curEle.slotName]: slotInfo }
+        }
+      }
+    }
+  }
+  /**
+   * 处理插槽
+   * <scope-slot>
+   *   <template v-slot:default="scopeSlot">
+   *     <div>{{ scopeSlot }}</div>
+   *   </template>
+   * </scope-slot>
+   * @param { AST } el 节点的 AST 对象
+   */
+  function processSlotContent(el) {
+    // 注意，具有 v-slot:xx 属性的 template 只能是组件的根元素，这里不做判断
+    if (el.tag === 'template') {
+      // 获取插槽信息
+      // 属性 map 对象
+      const attrMap = el.rawAttr
+      // 遍历属性 map 对象，找出其中的 v-slot 指令信息
+      for (let key in attrMap) {
+        if (key.match(/v-slot:(.*)/)) {
+          // 说明 template 标签上 v-slot 指令
+          // 获取指令后的插槽名称和值，比如: v-slot:default=xx
+          // default
+          const slotName = (el.slotName = RegExp.$1)
+          // xx
+          el.scopeSlot = attrMap[`v-slot:${slotName}`]
+          // 直接 return，因为该标签上只可能有一个 v-slot 指令
+          return
+        }
+      }
     }
   }
 
