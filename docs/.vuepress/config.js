@@ -3,10 +3,16 @@ module.exports = {
   themeConfig: {
     sidebar: [
       '/',
-
       {
-        title: 'css',
-        children: [['/css/css权重', '权重']],
+        title: 'CSS',
+        children: [['/css/priority', '权重']],
+      },
+      {
+        title: 'Vue',
+        children: [
+          ['/vue/init', '初始化'],
+          ['/vue/defineProperty', '响应式原理'],
+        ],
       },
     ],
   },
