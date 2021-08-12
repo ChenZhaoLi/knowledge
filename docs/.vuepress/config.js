@@ -11,7 +11,7 @@ module.exports = {
         title: 'Vue',
         children: [
           ['/vue/init', '初始化'],
-          ['/vue/defineProperty', '响应式原理'],
+          ['/vue/reactive', '响应式原理'],
         ],
       },
     ],
