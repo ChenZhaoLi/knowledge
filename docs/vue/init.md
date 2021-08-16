@@ -62,7 +62,7 @@ Vue构造函数中调动了_init方法，这个方法定义是挂载在原型链
 ```javascript
 export function initMixin(Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
-    // 将 Vue 实例赋值给 vm
+    //赋值，所以后续的 vm 就等价于 this
     const vm: Component = this;
     // a uid 
     vm._uid = uid++;

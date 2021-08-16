@@ -7,6 +7,8 @@
 ```javascript
 /**
 * 初始化顺序：props，methods，data，computed，watch
+* 所以 data 里 无法使用 computed
+* 如果 data 里使用的methods方法里用了computed变量，那computed变量为undefined
 */
 export function initState (vm: Component) {
   vm._watchers = []
@@ -30,6 +32,9 @@ export function initState (vm: Component) {
 > /src/core/instance/state.js
 
 ```javascript
+// props 最先初始化，主要做两件事
+// 1. 给 props[key] 设置响应式
+// 2. 将 key 代理到 vm实例上
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
@@ -71,6 +76,7 @@ const sharedPropertyDefinition = {
   get: noop,
   set: noop
 }
+// 通过 Object.defineProperty 的 get 和 set 设置拦截
 // 将 key 代理到 target 上，使 target[key] 的访问方式等同于 target[sourceKey][key]
 export function proxy (target: Object, sourceKey: string, key: string) {
   sharedPropertyDefinition.get = function proxyGetter () {
@@ -89,6 +95,12 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 > /src/core/instance/state.js
 
 ```javascript
+// 主要是四件事情
+// 1. methods对象的属性值必须是函数
+// 2. 方法名不能和 props 的属性重复
+// 3. 方法名不能和 vm 上以'_','$'开头的变量重复
+// 4. 将方法的上下文绑定到 vm 上，并将方法赋值到 vm 上
+
 function initMethods (vm: Component, methods: Object) {
   const props = vm.$options.props
   for (const key in methods) {
@@ -127,9 +139,14 @@ function initMethods (vm: Component, methods: Object) {
 > /src/core/instance/state.js
 
 ```javascript
+// 1. 获取 data，如果是函数，则用 vm 实例作为上下文调用改函数。
+// 2. data 属性值判重，不能和 methods，props 的属性值重复
+// 3. data 里非 $ 或 _ 开头的属性，就会被代理到 vm 实例上，通过 this.xxx 访问
+// 4. 为 data 对象上的数据设置响应式
 function initData (vm: Component) {
   // 获取 data，是一个对象
   let data = vm.$options.data
+  // getData 使用vm作为上下文来调用 data 函数
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
     : data || {}
@@ -180,6 +197,9 @@ function initData (vm: Component) {
 > /src/core/instance/state.js
 
 ```javascript
+// 1. 创建 watcher 实例，并默认懒执行
+// 2. 如果 vm 实例上没有 computed 属性的话，进行挂载。有的话，会和 data、props 做判重。
+//    所以，computed 属性是可以和 methods 属性重名，且不会覆盖已挂载的 methods 属性
 function initComputed (vm: Component, computed: Object) {
   // $flow-disable-line
   const watchers = vm._computedWatchers = Object.create(null)
@@ -229,7 +249,8 @@ function initComputed (vm: Component, computed: Object) {
 > /src/core/instance/state.js
 
 ```javascript
-
+// watch 属性值的类型有四种 { [key: string]: string | Function | Object | Array }
+// 1. 对属性值做处理，使 createWatcher 函数调用每个 handler
 function initWatch (vm: Component, watch: Object) {
   for (const key in watch) {
     const handler = watch[key]
@@ -251,10 +272,17 @@ function createWatcher (
   handler: any,
   options?: Object
 ) {
+  // 如果 handler 是对象，即
+  //  {
+  //    handler: function (val, oldVal) { /* ... */ },
+  //    deep: true
+  //  }
+  // 形式，提取 handler 和 options
   if (isPlainObject(handler)) {
     options = handler
     handler = handler.handler
   }
+  // 如果是 string ,则说明应该是实例上的方法
   if (typeof handler === 'string') {
     handler = vm[handler]
   }
@@ -267,7 +295,7 @@ function createWatcher (
     options?: Object
   ): Function {
     const vm: Component = this
-    // 对直接调用 vm.$watch 时的 cb 做兼容处理
+    // initWatch 已经对 cb 做了处理，这里是对直接调用 vm.$watch 时的 cb 做兼容处理
     if (isPlainObject(cb)) {
       return createWatcher(vm, expOrFn, cb, options)
     }
