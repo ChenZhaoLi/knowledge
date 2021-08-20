@@ -12,6 +12,8 @@ module.exports = {
         children: [
           ['/vue/init', '初始化'],
           ['/vue/reactive', '响应式原理'],
+          ['/vue/asyncUpdate', '异步更新'],
+          ['/vue/global-api', '全局API'],
         ],
       },
     ],

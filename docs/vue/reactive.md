@@ -1,3 +1,5 @@
+
+
 ## 响应式原理
 
 > #### initState
@@ -317,3 +319,326 @@ function createWatcher (
   }
 ```
 
+
+
+> ### observe
+>
+> /src/core/observer/index.js
+
+```javascript
+// 响应式的入口，旨在建立一套观察者机制
+// 1. 非对象和 VNode 实例不做响应式处理
+// 2. 查找 value 中是否有 __ob__ 属性，如果有说明此对象已经建立过观察者机制了，直接返回 __ob__
+// 3. new 一个 Observer 实例，这个观察者实例会被添加到 value 上，key 为 __ob__
+
+export function observe (value: any, asRootData: ?boolean): Observer | void {
+  // 非对象和 VNode 实例不做响应式处理
+  if (!isObject(value) || value instanceof VNode) {
+    return
+  }
+  let ob: Observer | void
+  // 查找 __ob__ 属性
+  if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+    ob = value.__ob__
+  } else if (
+    shouldObserve &&
+    !isServerRendering() &&
+    (Array.isArray(value) || isPlainObject(value)) &&
+    Object.isExtensible(value) &&
+    !value._isVue
+  ) {
+    // 创建 Observer 实例
+    ob = new Observer(value)
+  }
+  if (asRootData && ob) {
+    ob.vmCount++
+  }
+  return ob
+}
+```
+
+> ### Observer
+>
+> /src/core/observer/index.js
+
+```javascript
+// Observer 实例
+
+export class Observer {
+  value: any;
+  dep: Dep;
+  vmCount: number; // number of vms that have this object as root $data
+
+  constructor (value: any) {
+    this.value = value
+    // dep 实例用来维护观察者列表，并在被观察者发生变化时通知观察者
+    this.dep = new Dep()
+    this.vmCount = 0
+    // 给 value 添加一个不可枚举的属性 __ob__, 值为 this
+    def(value, '__ob__', this)
+    if (Array.isArray(value)) {
+      if (hasProto) {
+        // 如果当前环境的对象上能使用 __proto__
+        // 设置 value 的 __proto__ 为 arrayMethods
+        protoAugment(value, arrayMethods)
+      } else {
+        // 不能使用__proto__, 在 value 上使用  Object.defineProperty 直接添加方法
+        copyAugment(value, arrayMethods, arrayKeys)
+      }
+      this.observeArray(value)
+    } else {
+      // 遍历 value 的所有属性，给每个属性调用 defineReactive 方法
+      this.walk(value)
+    }
+  }
+
+  /**
+   * Walk through all properties and convert them into
+   * getter/setters. This method should only be called when
+   * value type is Object.
+   */
+  walk (obj: Object) {
+    const keys = Object.keys(obj)
+    for (let i = 0; i < keys.length; i++) {
+      defineReactive(obj, keys[i])
+    }
+  }
+
+  /**
+   * Observe a list of Array items.
+   */
+  observeArray (items: Array<any>) {
+    for (let i = 0, l = items.length; i < l; i++) {
+      observe(items[i])
+    }
+  }
+}
+```
+
+> ### defineReactive
+>
+> /src/core/observer/index.js
+
+```javascript
+export function defineReactive (
+  obj: Object,
+  key: string,
+  val: any,
+  customSetter?: ?Function,
+  shallow?: boolean
+) {
+  // 实例化 Dep，一个 key 一个 dep
+  const dep = new Dep()
+  // 获取 obj.key 的属性描述符
+  const property = Object.getOwnPropertyDescriptor(obj, key)
+  // 如果 obj.key 不可配置，直接 return
+  if (property && property.configurable === false) {
+    return
+  }
+
+  // cater for pre-defined getter/setters
+  // 得到 val 值
+  const getter = property && property.get
+  const setter = property && property.set
+  if ((!getter || setter) && arguments.length === 2) {
+    val = obj[key]
+  }
+  // 递归调用，处理 val 为对象的情况。确保每个 key 都被观测
+  let childOb = !shallow && observe(val)
+  Object.defineProperty(obj, key, {
+    enumerable: true,
+    configurable: true,
+    get: function reactiveGetter () {
+      const value = getter ? getter.call(obj) : val
+      if (Dep.target) {
+        dep.depend()
+        if (childOb) {
+          childOb.dep.depend()
+          if (Array.isArray(value)) {
+            dependArray(value)
+          }
+        }
+      }
+      return value
+    },
+    set: function reactiveSetter (newVal) {
+      const value = getter ? getter.call(obj) : val
+      /* eslint-disable no-self-compare */
+      if (newVal === value || (newVal !== newVal && value !== value)) {
+        return
+      }
+      /* eslint-enable no-self-compare */
+      if (process.env.NODE_ENV !== 'production' && customSetter) {
+        customSetter()
+      }
+      // #7981: for accessor properties without setter
+      if (getter && !setter) return
+      if (setter) {
+        setter.call(obj, newVal)
+      } else {
+        val = newVal
+      }
+      childOb = !shallow && observe(newVal)
+      dep.notify()
+    }
+  })
+}
+```
+
+> ### 拦截能改变原数组的七个方法
+>
+> src/core/observer/array.js
+
+```javascript
+
+const arrayProto = Array.prototype
+// 创建一个对象，该对象的 __proto__ 是 Array.prototype
+export const arrayMethods = Object.create(arrayProto)
+
+// 能改变原数组的七个方法
+const methodsToPatch = [
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse'
+]
+
+/**
+ * Intercept mutating methods and emit events
+ */
+methodsToPatch.forEach(function (method) {
+  // 缓存原生方法
+  const original = arrayProto[method]
+  def(arrayMethods, method, function mutator (...args) {
+    // 执行原生方法
+    const result = original.apply(this, args)
+    // 拿到数组上的 Observer 实例
+    const ob = this.__ob__
+    let inserted
+    // 添加数组选项时，对新添加的值也做响应式处理
+    switch (method) {
+      case 'push':
+      case 'unshift':
+        inserted = args
+        break
+      case 'splice':
+        inserted = args.slice(2)
+        break
+    }
+    if (inserted) ob.observeArray(inserted)
+    // 通知依赖进行更新
+    ob.dep.notify()
+    return result
+  })
+})
+```
+
+
+
+> ### Dep
+>
+> /src/core/observer/dep.js
+
+```javascript
+import type Watcher from "./watcher";
+import { remove } from "../util/index";
+import config from "../config";
+
+let uid = 0;
+
+/**
+ * A dep is an observable that can have multiple
+ * directives subscribing to it.
+ */
+export default class Dep {
+  static target: ?Watcher;
+  id: number;
+  subs: Array<Watcher>;
+
+  constructor() {
+    this.id = uid++;
+    this.subs = [];
+  }
+
+  addSub(sub: Watcher) {
+    this.subs.push(sub);
+  }
+
+  removeSub(sub: Watcher) {
+    remove(this.subs, sub);
+  }
+
+  depend() {
+    if (Dep.target) {
+      Dep.target.addDep(this);
+    }
+  }
+
+  notify() {
+    // stabilize the subscriber list first
+    const subs = this.subs.slice();
+    if (process.env.NODE_ENV !== "production" && !config.async) {
+      // subs aren't sorted in scheduler if not running async
+      // we need to sort them now to make sure they fire in correct
+      // order
+      subs.sort((a, b) => a.id - b.id);
+    }
+    for (let i = 0, l = subs.length; i < l; i++) {
+      subs[i].update();
+    }
+  }
+}
+
+// The current target watcher being evaluated.
+// This is globally unique because only one watcher
+// can be evaluated at a time.
+Dep.target = null;
+const targetStack = [];
+
+// 在 Watcher 的 get 函数中会调用此函数，对 Dep.target 进行赋值
+export function pushTarget(target: ?Watcher) {
+  targetStack.push(target);
+  Dep.target = target;
+}
+
+export function popTarget() {
+  targetStack.pop();
+  Dep.target = targetStack[targetStack.length - 1];
+}
+```
+
+
+
+* 一个依赖收集的流程
+
+  ```javascript
+  ...
+  watch: {
+            msg(oldVal, val) {
+              console.log(oldVal, val);
+            }
+          },
+   data() {
+            return {
+              msg: "hello vue"
+            };
+          }
+  ...
+  ```
+
+  举个例子，在 watch 中对 data 的 msg 进行监听，就会触发依赖收集
+
+  1. 首先会初始化 data
+
+  2. 然后初始化 watch，然后会以 createWatcher -> vm.$watch -> new Watcher 的顺序执行
+
+  3. Watcher 的 constructor 会执行 this.get。this.get 方法先调用 pushTarget 方法，将当前 Watcher 实例
+
+     赋值给 Dep.target。然后执行 this.getter 获取 msg 的值
+
+  4. 读取 vm.msg 值的操作，会触发 proxy 的 get 方法，从而去读取 vm._data.msg。然后触发 defineReactive 函数里给 vm._data.msg 设置的 get 函数
+
+  5. 在 vm._data.msg 的 get 函数中触发 dep.depend -> Watcher 的 addDep -> dep 的 addSub
