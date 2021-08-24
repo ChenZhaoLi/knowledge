@@ -12,6 +12,10 @@ module.exports = {
         children: [['/nodejs/IO', 'IO需要注意哪些']],
       },
       {
+        title: 'webpack',
+        children: [['/webpack/loader', 'webpack的loader']],
+      },
+      {
         title: 'Vue',
         children: [
           ['/vue/init', '初始化'],
