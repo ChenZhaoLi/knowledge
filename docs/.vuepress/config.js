@@ -13,7 +13,10 @@ module.exports = {
       },
       {
         title: 'webpack',
-        children: [['/webpack/loader', 'webpack的loader']],
+        children: [
+          ['/webpack/loader', 'webpack的loader'],
+          ['/webpack/plugin', 'webpack的plugin'],
+        ],
       },
       {
         title: 'Vue',
