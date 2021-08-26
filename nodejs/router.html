@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>VuePress</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/knowledge/assets/css/0.styles.3f78ab37.css" as="style"><link rel="preload" href="/knowledge/assets/js/app.c65263c0.js" as="script"><link rel="preload" href="/knowledge/assets/js/2.d9a222ff.js" as="script"><link rel="preload" href="/knowledge/assets/js/16.31c6b9ed.js" as="script"><link rel="prefetch" href="/knowledge/assets/js/10.624ab7ba.js"><link rel="prefetch" href="/knowledge/assets/js/11.fed9ed54.js"><link rel="prefetch" href="/knowledge/assets/js/12.882ceff6.js"><link rel="prefetch" href="/knowledge/assets/js/13.84d5b8a7.js"><link rel="prefetch" href="/knowledge/assets/js/14.2143a965.js"><link rel="prefetch" href="/knowledge/assets/js/15.52a45d35.js"><link rel="prefetch" href="/knowledge/assets/js/17.ac2e3aed.js"><link rel="prefetch" href="/knowledge/assets/js/18.c0334b19.js"><link rel="prefetch" href="/knowledge/assets/js/19.fdac3631.js"><link rel="prefetch" href="/knowledge/assets/js/20.512d8632.js"><link rel="prefetch" href="/knowledge/assets/js/21.0f68a002.js"><link rel="prefetch" href="/knowledge/assets/js/3.dfb039e4.js"><link rel="prefetch" href="/knowledge/assets/js/4.d6f55be9.js"><link rel="prefetch" href="/knowledge/assets/js/5.0ccb2373.js"><link rel="prefetch" href="/knowledge/assets/js/6.ee8dc5d9.js"><link rel="prefetch" href="/knowledge/assets/js/7.a68456d8.js"><link rel="prefetch" href="/knowledge/assets/js/8.256bb93e.js"><link rel="prefetch" href="/knowledge/assets/js/9.3972e0c1.js">
+    <link rel="stylesheet" href="/knowledge/assets/css/0.styles.3f78ab37.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/knowledge/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><a href="/knowledge/" aria-current="page" class="sidebar-link">Hello World Good !</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>CSS</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>NodeJS</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/knowledge/nodejs/IO.html" class="sidebar-link">IO需要注意哪些</a></li><li><a href="/knowledge/nodejs/1.html" class="sidebar-link">初始化</a></li><li><a href="/knowledge/nodejs/router.html" aria-current="page" class="active sidebar-link">路由中间件</a></li><li><a href="/knowledge/nodejs/2.html" class="sidebar-link">使用mongodb</a></li><li><a href="/knowledge/nodejs/3.html" class="sidebar-link">使用redis</a></li><li><a href="/knowledge/nodejs/cache.html" class="sidebar-link">缓存模块</a></li><li><a href="/knowledge/nodejs/log.html" class="sidebar-link">日志模块</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>webpack</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Vue</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><p>实现路由部分，使路径可以正常分发</p> <p>先定义一个简单的数据设置函数，在<code>lib</code>下新建<code>baseFun.js</code></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">/**
+ * @description 设置响应数据
+ * @param {*} ctx
+ * @param {*} ret
+ * @param {*} message
+ * @param {*} dataInfo
+ * @param {*} httpStatus
+ */</span>
+<span class="token keyword">function</span> <span class="token function">setResInfo</span><span class="token punctuation">(</span><span class="token parameter">ctx<span class="token punctuation">,</span> ret<span class="token punctuation">,</span> message<span class="token punctuation">,</span> dataInfo<span class="token punctuation">,</span> httpStatus <span class="token operator">=</span> <span class="token number">200</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> retInfo <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ret<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    retInfo <span class="token operator">=</span> <span class="token punctuation">{</span>
+      ret<span class="token operator">:</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>
+      message<span class="token operator">:</span> message <span class="token operator">?</span> message <span class="token operator">:</span> <span class="token string">'error'</span><span class="token punctuation">,</span>
+      data<span class="token operator">:</span> dataInfo <span class="token operator">?</span> dataInfo <span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    retInfo <span class="token operator">=</span> <span class="token punctuation">{</span>
+      ret<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      message<span class="token operator">:</span> message <span class="token operator">?</span> message <span class="token operator">:</span> <span class="token string">'success'</span><span class="token punctuation">,</span>
+      data<span class="token operator">:</span> dataInfo <span class="token operator">?</span> dataInfo <span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  ctx<span class="token punctuation">.</span>response<span class="token punctuation">.</span>type <span class="token operator">=</span> <span class="token string">'text/plain'</span>
+  ctx<span class="token punctuation">.</span>response<span class="token punctuation">.</span>status <span class="token operator">=</span> httpStatus
+  ctx<span class="token punctuation">.</span>response<span class="token punctuation">.</span>body <span class="token operator">=</span> retInfo
+  <span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+  setResInfo<span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><p>新建文件<code>src/middleware/router.js</code></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// src/middleware/router.js</span>
+<span class="token keyword">const</span> <span class="token constant">URL</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token constant">URL</span>
+<span class="token keyword">const</span> baseFun <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'../lib/baseFun.js'</span><span class="token punctuation">)</span>
+
+module<span class="token punctuation">.</span><span class="token function-variable function">exports</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">ctx<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token comment">// ...</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><p>在 <code>app.js</code>中使用</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// app.js</span>
+<span class="token keyword">const</span> routerMiddleware <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./src/middleware/router.js'</span><span class="token punctuation">)</span>
+<span class="token comment">// ...</span>
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token function">routerMiddleware</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">// ...</span>
+</code></pre></div><p>在本项目的<code>router</code>处理中，路径和类名、方法名是对应的。比如在浏览器地址栏输入<code>http://127.0.0.1:3000/tools/local</code>，意味着要去<code>src/controller</code>下找到 <code>tools</code> 文件夹，调用里面的local方法。</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code>    <span class="token comment">// ...</span>
+    <span class="token comment">// 获取 get 参数</span>
+    <span class="token keyword">const</span> pathname <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>ctx<span class="token punctuation">.</span>request<span class="token punctuation">.</span>url<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">http://</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>ctx<span class="token punctuation">.</span>request<span class="token punctuation">.</span>headers<span class="token punctuation">.</span>host<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">.</span>pathname  <span class="token comment">// /tools/local</span>
+
+    <span class="token keyword">let</span> pathnameArr <span class="token operator">=</span> pathname<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>Boolean<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>pathnameArr<span class="token punctuation">.</span>length <span class="token operator">&lt;</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      baseFun<span class="token punctuation">.</span><span class="token function">setResInfo</span><span class="token punctuation">(</span>ctx<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token string">'path not found'</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token number">404</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+ 	<span class="token keyword">let</span> method <span class="token operator">=</span> pathnameArr<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// local</span>
+    <span class="token keyword">let</span> controllerPath <span class="token operator">=</span> pathnameArr<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span> <span class="token comment">// '/tools'</span>
+    <span class="token keyword">let</span> ControllerClass
+    <span class="token comment">// ...</span>
+
+</code></pre></div><p>拿到文件名后就尝试<code>require</code> 对应的文件，然后执行对应的方法</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// 尝试查找文件</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token comment">// require(`../controller/tools`)</span>
+      ControllerClass <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">../controller/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>controllerPath<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      baseFun<span class="token punctuation">.</span><span class="token function">setResInfo</span><span class="token punctuation">(</span>ctx<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token string">'path not found'</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token number">404</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 尝试加载文件中的方法</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> controllerObj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ControllerClass</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>controllerObj<span class="token punctuation">[</span>method<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        baseFun<span class="token punctuation">.</span><span class="token function">setResInfo</span><span class="token punctuation">(</span>ctx<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token string">'path not found'</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token number">404</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>controllerObj<span class="token punctuation">[</span>method<span class="token punctuation">]</span><span class="token punctuation">[</span>Symbol<span class="token punctuation">.</span>toStringTag<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token string">'AsyncFunction'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 异步方法</span>
+        <span class="token keyword">await</span> controllerObj<span class="token punctuation">[</span>method<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 同步方法</span>
+        controllerObj<span class="token punctuation">[</span>method<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span>
+      baseFun<span class="token punctuation">.</span><span class="token function">setResInfo</span><span class="token punctuation">(</span>ctx<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token string">'server error'</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token number">500</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+</code></pre></div><p>controller 目录下的 js 文件要导出一个 Class</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// controller/tools.js</span>
+<span class="token keyword">class</span> <span class="token class-name">Tools</span> <span class="token punctuation">{</span>
+  <span class="token function">test</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'test'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> Tools
+
+</code></pre></div><p>接下来只要在浏览器地址栏输入<code>http://127.0.0.1:3000/tools/test</code>，就可以在<code>log/info-0.js</code>中看到输出</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/knowledge/nodejs/1.html" class="prev">
+        初始化
+      </a></span> <span class="next"><a href="/knowledge/nodejs/2.html">
+        使用mongodb
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/knowledge/assets/js/app.c65263c0.js" defer></script><script src="/knowledge/assets/js/2.d9a222ff.js" defer></script><script src="/knowledge/assets/js/16.31c6b9ed.js" defer></script>
+  </body>
+</html>

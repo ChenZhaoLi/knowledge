@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>全局API</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/knowledge/assets/css/0.styles.3f78ab37.css" as="style"><link rel="preload" href="/knowledge/assets/js/app.c65263c0.js" as="script"><link rel="preload" href="/knowledge/assets/js/2.d9a222ff.js" as="script"><link rel="preload" href="/knowledge/assets/js/18.c0334b19.js" as="script"><link rel="prefetch" href="/knowledge/assets/js/10.624ab7ba.js"><link rel="prefetch" href="/knowledge/assets/js/11.fed9ed54.js"><link rel="prefetch" href="/knowledge/assets/js/12.882ceff6.js"><link rel="prefetch" href="/knowledge/assets/js/13.84d5b8a7.js"><link rel="prefetch" href="/knowledge/assets/js/14.2143a965.js"><link rel="prefetch" href="/knowledge/assets/js/15.52a45d35.js"><link rel="prefetch" href="/knowledge/assets/js/16.31c6b9ed.js"><link rel="prefetch" href="/knowledge/assets/js/17.ac2e3aed.js"><link rel="prefetch" href="/knowledge/assets/js/19.fdac3631.js"><link rel="prefetch" href="/knowledge/assets/js/20.512d8632.js"><link rel="prefetch" href="/knowledge/assets/js/21.0f68a002.js"><link rel="prefetch" href="/knowledge/assets/js/3.dfb039e4.js"><link rel="prefetch" href="/knowledge/assets/js/4.d6f55be9.js"><link rel="prefetch" href="/knowledge/assets/js/5.0ccb2373.js"><link rel="prefetch" href="/knowledge/assets/js/6.ee8dc5d9.js"><link rel="prefetch" href="/knowledge/assets/js/7.a68456d8.js"><link rel="prefetch" href="/knowledge/assets/js/8.256bb93e.js"><link rel="prefetch" href="/knowledge/assets/js/9.3972e0c1.js">
+    <link rel="stylesheet" href="/knowledge/assets/css/0.styles.3f78ab37.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/knowledge/" class="home-link router-link-active"></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><a href="/knowledge/" aria-current="page" class="sidebar-link">Hello World Good !</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>CSS</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>NodeJS</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>webpack</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Vue</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/knowledge/vue/init.html" class="sidebar-link">初始化</a></li><li><a href="/knowledge/vue/reactive.html" class="sidebar-link">响应式原理</a></li><li><a href="/knowledge/vue/asyncUpdate.html" class="sidebar-link">异步更新</a></li><li><a href="/knowledge/vue/global-api.html" aria-current="page" class="active sidebar-link">全局API</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/knowledge/vue/global-api.html#全局api" class="sidebar-link">全局API</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="全局api"><a href="#全局api" class="header-anchor">#</a> 全局API</h2> <blockquote><h3 id="vue-extend"><a href="#vue-extend" class="header-anchor">#</a> Vue.extend</h3> <p>src\core\global-api\extend.js</p></blockquote> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">initExtend</span> <span class="token punctuation">(</span><span class="token parameter">Vue<span class="token operator">:</span> GlobalAPI</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">/**
+   * Each instance constructor, including Vue, has a unique
+   * cid. This enables us to create wrapped &quot;child
+   * constructors&quot; for prototypal inheritance and cache them.
+   */</span>
+  Vue<span class="token punctuation">.</span>cid <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">let</span> cid <span class="token operator">=</span> <span class="token number">1</span>
+
+  <span class="token comment">/**
+   * Class inheritance
+   */</span>
+  Vue<span class="token punctuation">.</span><span class="token function-variable function">extend</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">extendOptions<span class="token operator">:</span> Object</span><span class="token punctuation">)</span><span class="token operator">:</span> Function <span class="token punctuation">{</span>
+    extendOptions <span class="token operator">=</span> extendOptions <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token keyword">const</span> Super <span class="token operator">=</span> <span class="token keyword">this</span>
+    <span class="token keyword">const</span> SuperId <span class="token operator">=</span> Super<span class="token punctuation">.</span>cid
+    <span class="token keyword">const</span> cachedCtors <span class="token operator">=</span> extendOptions<span class="token punctuation">.</span>_Ctor <span class="token operator">||</span> <span class="token punctuation">(</span>extendOptions<span class="token punctuation">.</span>_Ctor <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>cachedCtors<span class="token punctuation">[</span>SuperId<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> cachedCtors<span class="token punctuation">[</span>SuperId<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> name <span class="token operator">=</span> extendOptions<span class="token punctuation">.</span>name <span class="token operator">||</span> Super<span class="token punctuation">.</span>options<span class="token punctuation">.</span>name
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">!==</span> <span class="token string">'production'</span> <span class="token operator">&amp;&amp;</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">validateComponentName</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> <span class="token function-variable function">Sub</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token function">VueComponent</span> <span class="token punctuation">(</span><span class="token parameter">options</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">_init</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 通过原型继承方式继承 Vue</span>
+    <span class="token class-name">Sub</span><span class="token punctuation">.</span>prototype <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token class-name">Super</span><span class="token punctuation">.</span>prototype<span class="token punctuation">)</span>
+    <span class="token class-name">Sub</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>constructor <span class="token operator">=</span> Sub
+    Sub<span class="token punctuation">.</span>cid <span class="token operator">=</span> cid<span class="token operator">++</span>
+    <span class="token comment">// 合并 options，以 Super.options 为主</span>
+    Sub<span class="token punctuation">.</span>options <span class="token operator">=</span> <span class="token function">mergeOptions</span><span class="token punctuation">(</span>
+      Super<span class="token punctuation">.</span>options<span class="token punctuation">,</span>
+      extendOptions
+    <span class="token punctuation">)</span>
+    Sub<span class="token punctuation">[</span><span class="token string">'super'</span><span class="token punctuation">]</span> <span class="token operator">=</span> Super
+
+    <span class="token comment">// For props and computed properties, we define the proxy getters on</span>
+    <span class="token comment">// the Vue instances at extension time, on the extended prototype. This</span>
+    <span class="token comment">// avoids Object.defineProperty calls for each instance created.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>Sub<span class="token punctuation">.</span>options<span class="token punctuation">.</span>props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">initProps</span><span class="token punctuation">(</span>Sub<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>Sub<span class="token punctuation">.</span>options<span class="token punctuation">.</span>computed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">initComputed</span><span class="token punctuation">(</span>Sub<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// allow further extension/mixin/plugin usage</span>
+    Sub<span class="token punctuation">.</span>extend <span class="token operator">=</span> Super<span class="token punctuation">.</span>extend
+    Sub<span class="token punctuation">.</span>mixin <span class="token operator">=</span> Super<span class="token punctuation">.</span>mixin
+    Sub<span class="token punctuation">.</span>use <span class="token operator">=</span> Super<span class="token punctuation">.</span>use
+
+    <span class="token comment">// create asset registers, so extended classes</span>
+    <span class="token comment">// can have their private assets too.</span>
+    <span class="token constant">ASSET_TYPES</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">type</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      Sub<span class="token punctuation">[</span>type<span class="token punctuation">]</span> <span class="token operator">=</span> Super<span class="token punctuation">[</span>type<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token comment">// enable recursive self-lookup</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      Sub<span class="token punctuation">.</span>options<span class="token punctuation">.</span>components<span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> Sub
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// keep a reference to the super options at extension time.</span>
+    <span class="token comment">// later at instantiation we can check if Super's options have</span>
+    <span class="token comment">// been updated.</span>
+    Sub<span class="token punctuation">.</span>superOptions <span class="token operator">=</span> Super<span class="token punctuation">.</span>options
+    Sub<span class="token punctuation">.</span>extendOptions <span class="token operator">=</span> extendOptions
+    Sub<span class="token punctuation">.</span>sealedOptions <span class="token operator">=</span> <span class="token function">extend</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> Sub<span class="token punctuation">.</span>options<span class="token punctuation">)</span>
+
+    <span class="token comment">// cache constructor</span>
+    cachedCtors<span class="token punctuation">[</span>SuperId<span class="token punctuation">]</span> <span class="token operator">=</span> Sub
+    <span class="token keyword">return</span> Sub
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">initProps</span> <span class="token punctuation">(</span><span class="token parameter">Comp</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> props <span class="token operator">=</span> Comp<span class="token punctuation">.</span>options<span class="token punctuation">.</span>props
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> key <span class="token keyword">in</span> props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">proxy</span><span class="token punctuation">(</span><span class="token class-name">Comp</span><span class="token punctuation">.</span>prototype<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">_props</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">initComputed</span> <span class="token punctuation">(</span><span class="token parameter">Comp</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> computed <span class="token operator">=</span> Comp<span class="token punctuation">.</span>options<span class="token punctuation">.</span>computed
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> key <span class="token keyword">in</span> computed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">defineComputed</span><span class="token punctuation">(</span><span class="token class-name">Comp</span><span class="token punctuation">.</span>prototype<span class="token punctuation">,</span> key<span class="token punctuation">,</span> computed<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/knowledge/vue/asyncUpdate.html" class="prev">
+        异步更新
+      </a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/knowledge/assets/js/app.c65263c0.js" defer></script><script src="/knowledge/assets/js/2.d9a222ff.js" defer></script><script src="/knowledge/assets/js/18.c0334b19.js" defer></script>
+  </body>
+</html>
