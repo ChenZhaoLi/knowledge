@@ -82,9 +82,7 @@ class FileListPlugin {
     // 获取类名，作为 pluginName
     const pluginName = FileListPlugin.name
 
-    // webpack module instance can be accessed from the compiler object,
-    // this ensures that correct version of the module is used
-    // (do not require/import the webpack or any symbols from it directly).
+    // 从 compiler 中获取 webpack 可以保证版本的正确
     const { webpack } = compiler
 
     // Compilation object gives us reference to some useful constants.

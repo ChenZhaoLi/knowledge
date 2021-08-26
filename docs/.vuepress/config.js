@@ -9,7 +9,15 @@ module.exports = {
       },
       {
         title: 'NodeJS',
-        children: [['/nodejs/IO', 'IO需要注意哪些']],
+        children: [
+          ['/nodejs/IO', 'IO需要注意哪些'],
+          ['/nodejs/1', '初始化'],
+          ['/nodejs/router', '路由中间件'],
+          ['/nodejs/2', '使用mongodb'],
+          ['/nodejs/3', '使用redis'],
+          ['/nodejs/cache', '缓存模块'],
+          ['/nodejs/log', '日志模块'],
+        ],
       },
       {
         title: 'webpack',
